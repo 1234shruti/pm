@@ -1,28 +1,49 @@
-def dfs(x, y, visited):
-    if (x, y) in visited:
+visited = set()
+
+def dfs(a, b):
+    if (a, b) in visited:
         return False
 
-    visited.add((x, y))
-    print(x, y)
+    visited.add((a, b))
+    print((a, b))
 
-    if x == 2 or y == 2:
-        print("Goal Reached!")
+    if a == 2:
+        print("Goal reached!")
         return True
 
-    moves = [
-        (4, y),
-        (x, 3),
-        (0, y),
-        (x, 0),
-        (x - min(x, 3-y), y + min(x, 3-y)),
-        (x + min(y, 4-x), y - min(y, 4-x))
-    ]
+    # Fill Jug A
+    if dfs(4, b):
+        return True
 
-    for a, b in moves:
-        if dfs(a, b, visited):
-            return True
+    # Fill Jug B
+    if dfs(a, 3):
+        return True
+
+    # Empty Jug A
+    if dfs(0, b):
+        return True
+
+    # Empty Jug B
+    if dfs(a, 0):
+        return True
+
+    # Pour Jug A into Jug B
+    amount = min(a, 3 - b)
+    if dfs(a - amount, b + amount):
+        return True
+
+    # Pour Jug B into Jug A
+    amount = min(b, 4 - a)
+    if dfs(a + amount, b - amount):
+        return True
 
     return False
 
 
-dfs(0, 0, set())
+print("WATER JUG PROBLEM USING DFS")
+print("Jug A = 4 litres")
+print("Jug B = 3 litres")
+print("Goal = 2 litres in Jug A")
+print()
+
+dfs(0, 0)

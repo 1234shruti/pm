@@ -1,38 +1,100 @@
-def alpha_beta(depth, index, maximizing, values, alpha, beta):
-    if depth == 3:
-        return values[index]
 
-    if maximizing:
-        best = -999
 
-        for i in range(2):
-            value = alpha_beta(depth + 1, index * 2 + i,
-                               False, values, alpha, beta)
-            best = max(best, value)
-            alpha = max(alpha, best)
+def alpha_beta(node, depth, alpha, beta, maximizing_player):
 
-            if beta <= alpha:
+    # Base condition
+    if depth == 0 or isinstance(node, int):
+        return node
+
+    if maximizing_player:
+
+        best_value = float('-inf')
+
+        print("\nMAX Node")
+        print("Alpha =", alpha, "Beta =", beta)
+
+        for child in node:
+
+            value = alpha_beta(
+                child,
+                depth - 1,
+                alpha,
+                beta,
+                False
+            )
+
+            best_value = max(best_value, value)
+            alpha = max(alpha, best_value)
+
+            print(
+                "MAX updated:",
+                "Value =", best_value,
+                "Alpha =", alpha,
+                "Beta =", beta
+            )
+
+            if alpha >= beta:
+                print(">>> BETA CUTOFF: Branch pruned")
                 break
 
-        return best
+        return best_value
 
     else:
-        best = 999
 
-        for i in range(2):
-            value = alpha_beta(depth + 1, index * 2 + i,
-                               True, values, alpha, beta)
-            best = min(best, value)
-            beta = min(beta, best)
+        best_value = float('inf')
 
-            if beta <= alpha:
+        print("\nMIN Node")
+        print("Alpha =", alpha, "Beta =", beta)
+
+        for child in node:
+
+            value = alpha_beta(
+                child,
+                depth - 1,
+                alpha,
+                beta,
+                True
+            )
+
+            best_value = min(best_value, value)
+            beta = min(beta, best_value)
+
+            print(
+                "MIN updated:",
+                "Value =", best_value,
+                "Alpha =", alpha,
+                "Beta =", beta
+            )
+
+            if alpha >= beta:
+                print(">>> ALPHA CUTOFF: Branch pruned")
                 break
 
-        return best
+        return best_value
 
 
-values = [3, 5, 6, 9, 1, 2, 0, -1]
+# Game Tree
+game_tree = [
+    [
+        [3, 5],
+        [6, 9]
+    ],
+    [
+        [1, 2],
+        [0, 4]
+    ]
+]
 
-result = alpha_beta(0, 0, True, values, -999, 999)
 
-print("Optimal value:", result)
+# Main Program
+result = alpha_beta(
+    game_tree,
+    depth=3,
+    alpha=float('-inf'),
+    beta=float('inf'),
+    maximizing_player=True
+)
+
+print("\n================================")
+print("Optimal Game Value:", result)
+print("================================")

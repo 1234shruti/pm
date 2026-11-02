@@ -1,24 +1,39 @@
+import re
+
 def chatbot():
-    print("Chatbot: Hello! How can I help you?")
+
+    print("Chatbot: Hello! I am a simple chatbot.")
+    print("Chatbot: Type 'bye' to exit.")
 
     while True:
-        user = input("You: ").lower()
 
-        if "hello" in user or "hi" in user:
-            print("Chatbot: Hello! Nice to meet you.")
+        user_input = input("You: ").lower().strip()
 
-        elif "name" in user:
-            print("Chatbot: I am a Python chatbot.")
+        # Predefined rules and pattern matching
 
-        elif "how are you" in user:
-            print("Chatbot: I am fine. Thank you!")
+        if re.search(r"\b(hi|hello|hey)\b", user_input):
+            print("Chatbot: Hello! How can I help you?")
 
-        elif "bye" in user:
-            print("Chatbot: Goodbye!")
+        elif re.search(r"\b(name|who are you)\b", user_input):
+            print("Chatbot: I am a rule-based chatbot.")
+
+        elif re.search(r"\b(how are you)\b", user_input):
+            print("Chatbot: I am fine! Thank you.")
+
+        elif re.search(r"\b(help)\b", user_input):
+            print("Chatbot: I can respond to greetings and simple questions.")
+
+        elif re.search(r"\b(time|date)\b", user_input):
+            from datetime import datetime
+            print("Chatbot:", datetime.now().strftime("%H:%M:%S, %d-%m-%Y"))
+
+        elif re.search(r"\b(bye|exit|quit)\b", user_input):
+            print("Chatbot: Goodbye! Have a nice day.")
             break
 
         else:
-            print("Chatbot: Sorry, I don't understand.")
+            print("Chatbot: Sorry, I don't understand that.")
 
 
+# Start the chatbot
 chatbot()

@@ -1,34 +1,6 @@
-def solve(board):
-    for i in range(9):
-        for j in range(9):
-            if board[i][j] == 0:
-                for num in range(1, 10):
-                    if valid(board, i, j, num):
-                        board[i][j] = num
-
-                        if solve(board):
-                            return True
-
-                        board[i][j] = 0
-
-                return False
-    return True
 
 
-def valid(board, row, col, num):
-    for i in range(9):
-        if board[row][i] == num or board[i][col] == num:
-            return False
-
-    for i in range(3):
-        for j in range(3):
-            if board[row - row % 3 + i][col - col % 3 + j] == num:
-                return False
-
-    return True
-
-
-board = [
+grid = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
     [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -40,8 +12,77 @@ board = [
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ]
 
-if solve(board):
-    for row in board:
-        print(row)
+
+# Display Sudoku Grid
+def display():
+    for r in range(9):
+
+        if r % 3 == 0 and r != 0:
+            print("------+-------+------")
+
+        for c in range(9):
+
+            if c % 3 == 0 and c != 0:
+                print("|", end=" ")
+
+            print(
+                grid[r][c] if grid[r][c] != 0 else ".",
+                end=" "
+            )
+
+        print()
+
+
+# Check whether a number is valid
+def valid(r, c, n):
+
+    # Check row and column
+    for i in range(9):
+        if grid[r][i] == n or grid[i][c] == n:
+            return False
+
+    # Check 3x3 box
+    br, bc = (r // 3) * 3, (c // 3) * 3
+
+    for i in range(br, br + 3):
+        for j in range(bc, bc + 3):
+            if grid[i][j] == n:
+                return False
+
+    return True
+
+
+# Solve Sudoku using Backtracking
+def solve():
+
+    for r in range(9):
+        for c in range(9):
+
+            if grid[r][c] == 0:
+
+                for n in range(1, 10):
+
+                    if valid(r, c, n):
+
+                        grid[r][c] = n
+
+                        if solve():
+                            return True
+
+                        # Backtracking
+                        grid[r][c] = 0
+
+                return False
+
+    return True
+
+
+# Main Program
+print("Initial State:")
+display()
+
+if solve():
+    print("\nSolved State:")
+    display()
 else:
-    print("No solution exists")
+    print("No solution exists.")

@@ -1,40 +1,63 @@
-from collections import deque
+import collections
 
-def bfs(graph, start, goal):
-    queue = deque([[start]])
-    visited = [start]
+grid = [
+    [0, 0, 0, 1, 0],
+    [1, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
+]
 
-    while queue:
-        path = queue.popleft()
-        node = path[-1]
+start = (0, 0)
+goal = (4, 4)
 
-        if node == goal:
-            return path
+moves = [
+    (-1, 0),  # Up
+    (1, 0),   # Down
+    (0, -1),  # Left
+    (0, 1)    # Right
+]
 
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                visited.append(neighbor)
-                queue.append(path + [neighbor])
+queue = collections.deque([start])
+visited = {start}
+parent = {start: None}
 
-    return None
+while queue:
+    current = queue.popleft()
 
+    if current == goal:
+        break
 
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['G'],
-    'F': ['G'],
-    'G': []
-}
+    r, c = current
 
-start = 'A'
-goal = 'G'
+    for dr, dc in moves:
+        nr = r + dr
+        nc = c + dc
 
-path = bfs(graph, start, goal)
+        if (0 <= nr < len(grid) and
+            0 <= nc < len(grid[0]) and
+            grid[nr][nc] == 0 and
+            (nr, nc) not in visited):
 
-if path:
-    print("Robot path:", path)
+            visited.add((nr, nc))
+            parent[(nr, nc)] = current
+            queue.append((nr, nc))
+
+if goal in visited:
+    path = []
+    current = goal
+
+    while current is not None:
+        path.append(current)
+        current = parent[current]
+
+    path.reverse()
+
+    print("Shortest Path:")
+    for position in path:
+        print(position)
+
+    print("Path Cost:", len(path) - 1)
+
 else:
-    print("No path found")
+    print("No path found!")
